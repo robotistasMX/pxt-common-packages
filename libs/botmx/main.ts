@@ -26,27 +26,39 @@ namespace botmx {
 
     export class Motor {
 
-        private input1: DigitalInOutPin;
-        private input2: DigitalInOutPin;
-        private pwm: PwmPin;
+        private input1: PwmPin;
+        private input2: PwmPin;
+        private enable: DigitalInOutPin;
 
-        setPins(in1: DigitalInOutPin, in2: DigitalInOutPin, speed: PwmPin): void {
+        setPins(in1: PwmPin, in2: PwmPin, en: DigitalInOutPin): void {
             // send pulse
             this.input1 = in1;
             this.input2 = in2;
-            this.pwm = speed;
+            this.enable = en;
         }
 
-        moveMotorForward(speed: number): void{
-            this.input1.digitalWrite(true);
+        moveMotorBackward(): void{
+            this.enable.digitalWrite(true);
             this.input2.digitalWrite(false);
-            this.pwm.analogWrite(speed);
+            this.input1.digitalWrite(true);
         }
 
-        moveMotorBackward(speed: number): void{
+        moveMotorForward(): void{
+            this.enable.digitalWrite(true);
             this.input1.digitalWrite(false);
             this.input2.digitalWrite(true);
-            this.pwm.analogWrite(speed);
+        }
+
+        moveMotorBackwardSpeed(speed: number): void{
+            this.enable.digitalWrite(true);
+            this.input2.digitalWrite(false);
+            this.input1.analogWrite(speed);
+        }
+
+        moveMotorForwardSpeed(speed: number): void{
+            this.enable.digitalWrite(true);
+            this.input1.digitalWrite(false);
+            this.input2.analogWrite(speed);
         }
 
         stopMotor(): void{
@@ -65,88 +77,106 @@ namespace botmx {
             this.motorR = motorR;
         }
 
-        //% blockId=move_forward block="%this|move %speed forward"
+        //% blockId=move_forward block="%botmx|avanzar"
         //% weight=81
-        //% group="Positional"
-        moveForward(speed: number): void {
-            this.motorR.moveMotorForward(speed);
-            this.motorL.moveMotorForward(speed);
+        //% group="Movimientos Robot"
+        moveForward(): void {
+            this.motorR.moveMotorForward();
+            this.motorL.moveMotorForward();
         }
 
-        //% blockId=move_backward block="%this|move %speed backward"
+        //% blockId=move_backward block="%botmx|retroceder"
         //% weight=80
-        //% group="Positional"
-        moveBackward(speed: number): void {
-            this.motorR.moveMotorBackward(speed);
-            this.motorL.moveMotorBackward(speed);
+        //% group="Movimientos Robot"
+        moveBackward(): void {
+            this.motorR.moveMotorBackward();
+            this.motorL.moveMotorBackward();
         }
 
-        //% blockId=turn_left block="%this| move %speed turnLeft"
+        //% blockId=turn_left block="%botmx| girar izquierda"
         //% weight=71
-        //% group="Positional"
-        turnLeft(speed: number): void {
-            this.motorR.moveMotorForward(speed);
-            this.motorL.moveMotorBackward(speed);
+        //% group="Movimientos Robot"
+        turnLeft(): void {
+            this.motorR.moveMotorForward();
+            this.motorL.moveMotorBackward();
         }
 
-        //% blockId=turn_right block="%this| move %speed turnRight"
+        //% blockId=turn_right block="%botmx| girar derecha"
         //% weight=71
-        //% group="Positional"
-        turnRight(speed: number): void {
-            this.motorR.moveMotorBackward(speed);
-            this.motorL.moveMotorForward(speed);
+        //% group="Movimientos Robot"
+        turnRight(): void {
+            this.motorR.moveMotorBackward();
+            this.motorL.moveMotorForward();
         }
 
-        //% blockId=forward_motor_r block="%this| move %speed forwardMotorR"
+        //% blockId=stop_robot block="%botmx| detener robot"
         //% weight=71
-        //% group="Positional"
+        //% group="Movimientos Robot"
+        stopRobot(): void {
+            this.motorR.stopMotor();
+            this.motorL.stopMotor();
+        }
+
+        //% blockId=forward_motor_r block="%botmx| avanzar motor derecho %speed"
+        //% weight=71
+        //% group="Movimientos Motor"
         forwardMotorR(speed: number): void {
-            this.motorR.moveMotorForward(speed);
-            this.motorL.stopMotor();
+            this.motorR.moveMotorForwardSpeed(speed);
         }
 
-        //% blockId=backward_motor_r block="%this| move %speed backwardMotorR"
+        //% blockId=backward_motor_r block="%botmx| retroceder motor derecho %speed"
         //% weight=71
-        //% group="Positional"
+        //% group="Movimientos Motor"
         backwardMotorR(speed: number): void {
-            this.motorR.moveMotorBackward(speed);
-            this.motorL.stopMotor();
+            this.motorR.moveMotorBackwardSpeed(speed);
         }
 
-        //% blockId=forward_motor_l block="%this| move %speed forwardMotorL"
+        //% blockId=stop_motor_r block="%botmx| detener motor derecho"
         //% weight=71
-        //% group="Positional"
+        //% group="Movimientos Motor"
+        stopMotorR(): void {
+            this.motorR.stopMotor();
+        }
+
+        //% blockId=forward_motor_l block="%botmx|  avanzar motor izquierdo %speed"
+        //% weight=71
+        //% group="Movimientos Motor"
         forwardMotorL(speed: number): void {
-            this.motorL.moveMotorForward(speed);
-            this.motorR.stopMotor();
+            this.motorL.moveMotorForwardSpeed(speed);
         }
 
-        //% blockId=backward_motor_l block="%this| move %speed backwardMotorL"
+        //% blockId=backward_motor_l block="%botmx| retroceder motor izquierdo %speed"
         //% weight=71
-        //% group="Positional"
+        //% group="Movimientos Motor"
         backwardMotorL(speed: number): void {
-            this.motorL.moveMotorBackward(speed);
-            this.motorR.stopMotor();
+            this.motorL.moveMotorBackwardSpeed(speed);
+        }
+
+        //% blockId=stop_motor_l block="%botmx| detener motor izquierdo"
+        //% weight=71
+        //% group="Movimientos Motor"
+        stopMotorL(): void {
+            this.motorL.stopMotor();
         }
 
     }
 
-    //% blockId=create_moto block="set pin1 %input1|set pin2 %input2|set pin3 %speed"
+    //% blockId=create_moto block="motor_1 %input1| motor_2 %input2| enable %en"
     //% weight=99
-    //% group="Configuration"
-    export function createMotor(input1: DigitalInOutPin, input2: DigitalInOutPin, speed: PwmPin)
+    //% group="Ajustes"
+    export function createMotor(input1: PwmPin, input2: PwmPin, en: DigitalInOutPin)
         : Motor {
         let motor = new Motor();
-        motor.setPins(input1, input2, speed);
+        motor.setPins(input1, input2, en);
         return motor;
     }
 
-    //% blockId=create_robot block="set left motor %motor1|set right motor %motorR"
+    //% blockId=create_robot block="motor derecho %motorR|motor izquierdo %motorL"
     //% weight=100
-    //% group="Configuration"
-    export function createBotMX(motorL: Motor, motorR: Motor): Robot {
+    //% group="Ajustes"
+    export function createBotMX(motorR: Motor, motorL: Motor): Robot {
         let robot = new Robot();
-        robot.setMotors(motorL, motorR);
+        robot.setMotors(motorR, motorL);
         return robot;
     }
 
