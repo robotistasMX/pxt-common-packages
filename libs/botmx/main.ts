@@ -180,4 +180,18 @@ namespace botmx {
         return robot;
     }
 
+    //% blockId=sound_mx block="pin %sound| tone %t| duration %d"
+    //% weight=100
+    //% group="Sonido"
+    export function soundMX(sound: DigitalInOutPin, t:number, d:number): void {
+        let index = 0;
+        while (index <= (d*1000)){
+            sound.digitalWrite(true);
+            control.waitMicros(t);
+            sound.digitalWrite(false);
+            control.waitMicros(t);
+            index=index + t*2;
+        }
+    }
+
 }
