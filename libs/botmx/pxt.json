@@ -1,0 +1,17 @@
+{
+    "name": "botmx",
+    "version": "0.2.2",
+    "description": "MOVIMIENTOS",
+    "license": "MIT",
+    "files": [
+        "README.md",
+        "main.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true,
+    "dependencies": {
+        "core": "file:../core"
+    }
+}
